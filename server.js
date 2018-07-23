@@ -137,6 +137,26 @@ app.put('/posts/:id', (req, res) => {
 		});
 	}
 
+	function closeServer() {
+		return mongoose.disconnect().then(() => {
+			return new Promise((resolve,reject) => {
+				console.log('Closing server');
+				server.close(err => {
+					if (err) {
+						return reject(err); //if error in closing server, reject
+					}
+					resolve(); //all else resolve
+				});
+			});
+		});
+	}
+
+	if(require.main === module) {
+		runServer(DATABASE_URL).catch(err => console.log(err));
+	}
+
+	module.exports = { runServer, app, closeServer }; //module.exports uses those function blocks
+
 
 
 
